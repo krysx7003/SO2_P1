@@ -12,7 +12,6 @@ set_target_properties(Proj_1 PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 target_compile_options(Proj_1 PRIVATE
-        -O3
+        -O0
         -march=x86-64
 )
-

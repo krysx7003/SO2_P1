@@ -1,7 +1,10 @@
 #include <iostream>
-
+using namespace std;
 int main(){
-    std::cout<<"Hello World\n";
-    std::cout<<"Press any key to exit...";
-    std::cin.get();
+    int i = 0;
+    cout<<"Hello World\n";
+    i++;
+    cout<<"Press ENTER to exit...";
+    cout<<i;
+    cin.get();
 }

@@ -5,7 +5,7 @@
             "name": "Debug current file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/debug/${fileBasenameNoExtension}.exe", 
+            "program": "${workspaceFolder}/build/debug/${fileBasenameNoExtension}", 
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",  
@@ -20,7 +20,7 @@
                 }
             ],
             "preLaunchTask": "Build and Debug",  
-            "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe" 
+            "miDebuggerPath": "/usr/bin/gdb" 
         }
     ]
 }

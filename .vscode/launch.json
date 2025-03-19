@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/${fileBasenameNoExtension}", 
-            "args": [],
+            "args": ["${input:programArgs}"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",  
             "environment": [],
@@ -21,6 +21,14 @@
             ],
             "preLaunchTask": "Build and Debug",  
             "miDebuggerPath": "/usr/bin/gdb" 
+        }
+    ],
+    "inputs": [
+        {
+            "id": "programArgs",
+            "type": "promptString",
+            "description": "Enter arguments for the program",
+            "default": "5"
         }
     ]
 }

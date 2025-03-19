@@ -51,7 +51,7 @@
             "command": "gnome-terminal",
             "args": [
                 "--", "bash", "-c",
-                "./${fileBasenameNoExtension}"
+                "./${fileBasenameNoExtension} ${input:programArgs}",
             ],
             "dependsOn": [
                 "CMake Configure Release","CMake Build"
@@ -87,6 +87,14 @@
             "presentation": {
                 "reveal": "always"
             }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "programArgs",
+            "type": "promptString",
+            "description": "Enter arguments for the program",
+            "default": "5"
         }
     ],
     "version": "2.0.0"

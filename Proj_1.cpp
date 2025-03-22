@@ -1,8 +1,9 @@
 #include <iostream>
 #include <pthread.h>
+#include <vector>
 using namespace std;
 
-pthread_t* philosophers;
+vector<pthread_t*> philosophers;
 
 void draw(int numOfPhil){
     cout<<"==============================================\n";
@@ -13,19 +14,28 @@ void draw(int numOfPhil){
 }
 
 void* test(void* arg){
-
-    pthread_detach(pthread_self());
-    
-    cout<<arg<<"\n";
-
-    pthread_exit(NULL);
+    int id = *(int*)arg;
+    cout<<"Phil"<<id<<"\n";
+    return nullptr;
 }
 
-void init(int numOfPhil,int numOfForks){
-    for( int i = 0; i < numOfPhil; i++){
-        //pthread_create(philosophers[i],NULL,&test,i);       
+void init(int numOfPhils,int numOfForks){
+    vector<int> phillIDs;
+    for( int i = 0; i < numOfPhils; i++){
+        phillIDs.push_back(i);
+    }
+    for( int i = 0; i < numOfPhils; i++){
+        philosophers.push_back(new pthread_t);
+        pthread_create(philosophers.at(i),NULL,&test,&phillIDs[i]);       
     } 
-    draw(numOfPhil);
+    draw(numOfPhils);
+}
+
+void cleanup() {
+    for (auto thread : philosophers) {
+        pthread_join(*thread, nullptr);
+        delete thread;  // Free memory allocated for the pthread_t
+    }
 }
 
 int main(int argc,char ** argv){
@@ -44,6 +54,7 @@ int main(int argc,char ** argv){
     }else{
         cout<<"The number of philosophers was not provided\n";
     }
+    cleanup();
     cout<<"Press ENTER to continue...";
     cin.get();
     return 0;

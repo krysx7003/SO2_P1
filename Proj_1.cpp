@@ -1,41 +1,23 @@
 #include <iostream>
 #include <pthread.h>
 #include <vector>
+#include "Philosopher.h"
+#include "draw.h"
+
 using namespace std;
+const int TIME = 3000;
+pthread_t* thread;
 
-vector<pthread_t*> philosophers;
+vector<Philosopher> philosophers; 
 
-void draw(int numOfPhil){
+void draw(){
+    //TODO - Zablokować podczas pisania
+    system("clear");
     cout<<"==============================================\n";
-    for( int i = 0; i < numOfPhil; i++){
-        cout<<"Philosopher "<<i+1<<" : Waiting"<<"\n";
+    for(Philosopher phil :philosophers){
+        cout<<phil.toString();
     }
     cout<<"==============================================\n";
-}
-
-void* test(void* arg){
-    int id = *(int*)arg;
-    cout<<"Phil"<<id<<"\n";
-    return nullptr;
-}
-
-void init(int numOfPhils,int numOfForks){
-    vector<int> phillIDs;
-    for( int i = 0; i < numOfPhils; i++){
-        phillIDs.push_back(i);
-    }
-    for( int i = 0; i < numOfPhils; i++){
-        philosophers.push_back(new pthread_t);
-        pthread_create(philosophers.at(i),NULL,&test,&phillIDs[i]);       
-    } 
-    draw(numOfPhils);
-}
-
-void cleanup() {
-    for (auto thread : philosophers) {
-        pthread_join(*thread, nullptr);
-        delete thread;  // Free memory allocated for the pthread_t
-    }
 }
 
 int main(int argc,char ** argv){
@@ -43,8 +25,15 @@ int main(int argc,char ** argv){
         try{
             int numOfPhil = stoi( argv[1] );
             if( numOfPhil > 0 ){
-                int numOfForks = numOfPhil;
-                init(numOfPhil,numOfForks);
+                int numOfChops = numOfPhil;
+                for( int i = 0; i < numOfPhil; i++){
+                    //TODO - Poprawnie zainicjować tablicę
+                    philosophers.push_back(Philosopher());
+                }
+                draw();
+                //TODO - To do pętli
+                thread = new pthread_t;
+                pthread_create(thread,NULL,Philosopher::runThread,&philosophers[0]);  
             }else{
                 cout<<"The number of philosophers given was incorecct\n";
             }
@@ -54,8 +43,15 @@ int main(int argc,char ** argv){
     }else{
         cout<<"The number of philosophers was not provided\n";
     }
-    cleanup();
+    // cleanup();
     cout<<"Press ENTER to continue...";
     cin.get();
     return 0;
 }
+
+// void cleanup() {
+//     for (auto thread : philosophers) {
+//         pthread_join(*thread, nullptr);
+//         delete thread;  // Free memory allocated for the pthread_t
+//     }
+// }

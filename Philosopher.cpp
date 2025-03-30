@@ -1,27 +1,33 @@
 #include "Philosopher.h"
 
-string Philosopher::stateToString(State state){
+string Philosopher::stateToString(PhilState state){
     switch (state) {
-        case State::WAITING: return "WAITING";
-        case State::THINKING: return "THINKING";
-        case State::HUNGRY: return "HUNGRY";
-        case State::EATING: return "EATING";
+        case PhilState::WAITING: return "WAITING";
+        case PhilState::THINKING: return "THINKING";
+        case PhilState::HUNGRY: return "HUNGRY";
+        case PhilState::EATING: return "EATING";
         default: return "UNKNOWN";
     }
 }
 string Philosopher::toString(){
-    string leftChopstick =  "";
-    if(leftChop != nullptr){
-        leftChopstick = to_string( leftChop->id );
+    string leftChopstick =  " ";
+    if(leftChop != -1){
+        leftChopstick = to_string( leftChop ); 
     }
-    string rightChopstick = "";
-    if(rightChop != nullptr){
-        rightChopstick = to_string( rightChop->id );
+    string rightChopstick = " ";
+    if(rightChop != -1){
+        rightChopstick = to_string( rightChop );
     }
     ostringstream oss; 
     oss << "Philosopher: " << setw(3) << id << " | " 
-        << setw(3) << leftChopstick << " | " 
-        << setw(3) << rightChopstick << " | " 
+        << setw(5) << leftChopstick << " | " 
+        << setw(5) << rightChopstick << " | " 
         << setw(12) << stateToString( myState ) << " |\n";
     return oss.str();
+}
+void Philosopher::setLeftChop(int left){
+    leftChop = left;
+}
+void Philosopher::setRightChop(int right){
+    rightChop = right;
 }

@@ -5,7 +5,7 @@
 #include <sstream>  
 using namespace std;
 
-enum class State{
+enum class PhilState{
     WAITING = 0,
     THINKING = 1,
     HUNGRY = 2,
@@ -14,12 +14,19 @@ enum class State{
 
 class Philosopher{
     public:
-    int id = 0;
-    int numOfPhils = 5;
-    State myState = State::WAITING;
-    Chopstick *leftChop = nullptr;
-    Chopstick *rightChop = nullptr;    
+    int id;
+    int left,right;
+    int leftChop,rightChop;
+    int timesThinking,timesEating,timesHungry;
+    bool boothLocked;
+    PhilState myState;
     string toString();
-    string stateToString(State state);
-    Philosopher(int id,int numOfPhils ) : id(id), numOfPhils(numOfPhils), myState(State::WAITING), leftChop(nullptr), rightChop(nullptr){}
+    string stateToString(PhilState state);
+    void setLeftChop(int left);
+    void setRightChop(int right);
+    Philosopher(int id, int numOfPhil) : id(id), myState(PhilState::WAITING), leftChop(-1), rightChop(-1){
+        left = ( id - 1 + numOfPhil)%numOfPhil;
+        right = ( id )%numOfPhil;
+        boothLocked = false;
+    }
 };

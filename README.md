@@ -4,6 +4,10 @@
 2. Zagłodzenie
 3. Poprawne
 
+## Instrukcja
+
+## Teoria
+
 ## Źródła
 
 1. <https://www.geeksforgeeks.org/dining-philosopher-problem-using-semaphores/>

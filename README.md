@@ -39,7 +39,7 @@ Po podniesieniu pałeczek filozof je przez jakiś skończony czas. Następnie od
 
 ### Wydruk w konsoli
 
-![Przykład wydruku](img/image.png)
+![Przykład wydruku](img/image.png)\
 Powyżej zamieszczam przykład tego jak będzie wyglądał wydruk w konsoli.
 Każdy wiersz w tablicy to osobny filozof oraz wątek.
 Każdy filozof ma przypisane własne id.

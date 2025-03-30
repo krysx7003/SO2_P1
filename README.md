@@ -1,16 +1,22 @@
 # Systemy Operacyjne 2
 
+## Teoria
+
+Problem jedzących filozofów.
+
 ## Instrukcja
 
-1. Kod przygotowany na systemy Linux (kożysta z biblioteki pthreads)
-2. Gotowy plik wykonywalny znajduję się w katalogu build/release/ pod nazwą Proj_1
-3. Do całego projektu załączony jest CMakeLists.txt
+1. Kod przygotowany na systemy Linux (korzysta z biblioteki pthreads).
+2. Gotowy plik wykonywalny znajduję się w katalogu build/release/ pod nazwą Proj_1.
+3. Do całego projektu załączony jest CMakeLists.txt.
 4. Aby wygenerować plik wykonywalny należ użyć komend:
-    cmake -S . -B build/release -G "Unix Makefiles"
-Następnie:
-    cmake --build build/release
 
-## Teoria
+        cmake -S . -B build/release -G "Unix Makefiles"
+        cmake --build build/release
+5. Przy uruchamianiu programu należy podać argument typu int będący liczbą filozofów. Np:
+
+        ./Proj_1 5
+
 
 ## Źródła
 

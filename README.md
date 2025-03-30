@@ -1,10 +1,14 @@
 # Systemy Operacyjne 2
 
-1. Zakleszczenie
-2. Zagłodzenie
-3. Poprawne
-
 ## Instrukcja
+
+1. Kod przygotowany na systemy Linux (kożysta z biblioteki pthreads)
+2. Gotowy plik wykonywalny znajduję się w katalogu build/release/ pod nazwą Proj_1
+3. Do całego projektu załączony jest CMakeLists.txt
+4. Aby wygenerować plik wykonywalny należ użyć komend:
+    cmake -S . -B build/release -G "Unix Makefiles"
+Następnie:
+    cmake --build build/release
 
 ## Teoria
 

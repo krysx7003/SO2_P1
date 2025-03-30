@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <vector>
 #include <random>
+#include <signal.h>
 #include <unistd.h>
 #include <mutex>
 #include "Chopstick.h"
@@ -21,27 +22,34 @@ vector<Chopstick*> chopsticks;
 vector<pthread_t> threads;
 vector<Philosopher> philosophers; 
 
+void signalHandler(int signum) {
+    pthread_exit(nullptr); 
+}
 string header(){
     ostringstream oss; 
     oss << "Philosopher: " << setw(3) << "ID" << " | " 
         << setw(5) << "ID_C1" << " | " 
-        << setw(5) << "ID_C1" << " | " 
-        << setw(12) << "STATE" << " |\n";
+        << setw(5) << "ID_C2" << " | " 
+        << setw(12) << "STATE" << " | "
+        << setw(5) << "T" << " | " 
+        << setw(5) << "E" << " | " 
+        << setw(5) << "H" << " |\n" ;
     return oss.str();
 }
 void draw(){
     system("clear");
-    cout<<"=============================================\n";
+    cout<<"=========================================================================\n";
     cout<<header();
-    cout<<"=============================================\n";
+    cout<<"=========================================================================\n";
     for(Philosopher phil :philosophers){
         cout<<phil.toString();
     }
-    cout<<"=============================================\n";
+    cout<<"=========================================================================\n";
     cout<<"Press ENTER to stop...\n";
 }
 void think(int i){
     philosophers[i].myState = PhilState::THINKING;
+    philosophers[i].timesThinking++;
     {
         lock_guard<mutex> lock(out);
         cout<<philosophers[i].id<<"\n";
@@ -51,21 +59,20 @@ void think(int i){
 }
 void takeChop(int i){
     philosophers[i].myState = PhilState::HUNGRY;
-    if(!philosophers[i].boothLocked){
-        int leftId = philosophers[i].left;
-        int rightId = philosophers[i].right;
+    philosophers[i].timesHungry++;
+    int leftId = philosophers[i].left;
+    int rightId = philosophers[i].right;
+    chopMtx[leftId].lock();
+    philosophers[i].setLeftChop(leftId);
+    while( chopMtx[rightId].try_lock() == false ){
+        chopMtx[leftId].unlock();
+        philosophers[i].setLeftChop(-1);
+        usleep(1000);
         chopMtx[leftId].lock();
-        philosophers[i].setLeftChop(leftId);
-        while( chopMtx[rightId].try_lock() == false ){
-            chopMtx[leftId].unlock();
-            philosophers[i].setLeftChop(-1);
-            usleep(1000);
-            chopMtx[leftId].lock();
-        }
-        philosophers[i].setLeftChop(leftId);
-        philosophers[i].setRightChop(rightId);
-        philosophers[i].boothLocked = true;
     }
+    philosophers[i].setLeftChop(leftId);
+    philosophers[i].setRightChop(rightId);
+    philosophers[i].boothLocked = true;
     {
         lock_guard<mutex> lock(out);
         cout<<philosophers[i].id<<"\n";
@@ -74,6 +81,7 @@ void takeChop(int i){
 }
 void eat(int i){
     philosophers[i].myState = PhilState::EATING;
+    philosophers[i].timesEating++;
     {
         lock_guard<mutex> lock(out);
         cout<<philosophers[i].id<<"\n";
@@ -96,17 +104,11 @@ void returnChop(int i){
 }
 void* run(void* arg){
     int i = *( static_cast<int*>(arg) );
-    delete static_cast<int*>(arg); 
-    if( i == 0 ){
-        philosophers[0].setLeftChop(philosophers[0].left);
-        chopMtx[philosophers[0].left].lock();
-        philosophers[0].setRightChop(philosophers[0].right);
-        chopMtx[philosophers[0].right].lock();
-        philosophers[0].boothLocked = true;
-        draw();
-    }
+    delete static_cast<int*>(arg);
+    signal(SIGTERM, signalHandler); 
     while (true){
         think(i);
+        pthread_testcancel();
         takeChop(i);
         eat(i);
         returnChop(i);
@@ -115,7 +117,9 @@ void* run(void* arg){
 }
 void cleanup(vector<pthread_t> threads) {
     for (auto thread : threads) {
-        pthread_cancel(thread);
+        pthread_kill(thread,SIGTERM);
+    }
+    for (auto thread : threads) {
         pthread_join(thread, nullptr);
     }
     cout<<"Threads stopped\n";

@@ -28,5 +28,8 @@ class Philosopher{
         left = ( id - 1 + numOfPhil)%numOfPhil;
         right = ( id )%numOfPhil;
         boothLocked = false;
+        timesThinking = 0;
+        timesEating = 0;
+        timesHungry = 0;
     }
 };

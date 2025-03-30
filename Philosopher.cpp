@@ -22,7 +22,10 @@ string Philosopher::toString(){
     oss << "Philosopher: " << setw(3) << id << " | " 
         << setw(5) << leftChopstick << " | " 
         << setw(5) << rightChopstick << " | " 
-        << setw(12) << stateToString( myState ) << " |\n";
+        << setw(12) << stateToString( myState ) << " | "
+        << setw(5) << timesThinking << " | " 
+        << setw(5) << timesEating << " | " 
+        << setw(5) << timesHungry << " |\n";
     return oss.str();
 }
 void Philosopher::setLeftChop(int left){

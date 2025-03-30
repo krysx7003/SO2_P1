@@ -1,6 +1,8 @@
 #pragma once
 #include "Chopstick.h"
 #include <string>
+#include <mutex>
+#include <iostream>
 using namespace std;
 
 enum class State{
@@ -19,6 +21,7 @@ class Philosopher{
     State myState = State::WAITING;
     Chopstick *leftChop = nullptr;
     Chopstick *rightChop = nullptr;    
+    mutex *out;
     void think();
     void takeChop();
     void eat();
@@ -26,8 +29,7 @@ class Philosopher{
     void run();
     string toString();
     string stateToString(State state);
-    Philosopher();
-    //TODO - Kolejny konstruktor 
+    Philosopher(int id,int numOfPhils,mutex *out) : id(id), numOfPhils(numOfPhils), myState(State::WAITING), leftChop(nullptr), rightChop(nullptr), out(out) {};
     static void* runThread(void* arg) {
         Philosopher* phil = static_cast<Philosopher*>(arg);  
         if (phil) {

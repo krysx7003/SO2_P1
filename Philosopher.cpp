@@ -1,28 +1,30 @@
 #include "Philosopher.h"
 #include <random>
 #include <unistd.h>
-#include <iostream>
 #include "draw.h"
 
 void Philosopher::think(){
-    //TODO - Logika??
+    lock_guard<mutex> lock(*out);
+    myState = State::THINKING;
+    cout<<id;
+    draw();
     usleep(( rand()%MAX_TIME+1 ) * US_TO_S );
 }
 void Philosopher::takeChop(){
-    //TODO - Logika??
+    lock_guard<mutex> lock(*out);
     myState = State::HUNGRY;
+    cout<<id;
     draw();
 }
 void Philosopher::eat(){
-    //TODO - Logika??
-    usleep(( rand()%MAX_TIME+1 ) * US_TO_S );
+    lock_guard<mutex> lock(*out);
     myState = State::EATING;
+    cout<<id;
     draw();
+    usleep(( rand()%MAX_TIME+1 ) * US_TO_S );
 }
 void Philosopher::returnChop(){
-    //TODO - Logika??
-    myState = State::THINKING;
-    draw();
+
 }
 void Philosopher::run(){
     while (true){
@@ -51,11 +53,4 @@ string Philosopher::toString(){
         rightChopstick = to_string( rightChop->id );
     }
     return string( "Philosopher: " ) + to_string( id ) + " | " + leftChopstick + " | " + rightChopstick + " | " + stateToString( myState ) + " |\n";
-}
-Philosopher::Philosopher(){
-    id = 0;
-    numOfPhils = 5;
-    myState = State::WAITING;
-    leftChop = nullptr;
-    rightChop = nullptr;    
 }

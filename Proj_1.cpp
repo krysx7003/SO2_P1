@@ -6,13 +6,14 @@
 
 using namespace std;
 const int TIME = 3000;
-pthread_t* thread;
 
+mutex out;
+
+vector<Chopstick*> chopsticks;
 vector<Philosopher> philosophers; 
 
 void draw(){
-    //TODO - Zablokować podczas pisania
-    system("clear");
+    // system("clear");
     cout<<"==============================================\n";
     for(Philosopher phil :philosophers){
         cout<<phil.toString();
@@ -20,20 +21,27 @@ void draw(){
     cout<<"==============================================\n";
 }
 
+// void cleanup() {
+//     for (auto thread : threads) {
+//         pthread_join(*thread, nullptr);
+//         delete thread;  
+//     }
+// }
 int main(int argc,char ** argv){
     if(argc>1){    
         try{
             int numOfPhil = stoi( argv[1] );
             if( numOfPhil > 0 ){
                 int numOfChops = numOfPhil;
+                vector<pthread_t> threads(numOfPhil);
                 for( int i = 0; i < numOfPhil; i++){
-                    //TODO - Poprawnie zainicjować tablicę
-                    philosophers.push_back(Philosopher());
+                    chopsticks.push_back(new Chopstick(i));
+                    philosophers.push_back(Philosopher(i,numOfPhil,&out));
                 }
                 draw();
-                //TODO - To do pętli
-                thread = new pthread_t;
-                pthread_create(thread,NULL,Philosopher::runThread,&philosophers[0]);  
+                for( int i = 0; i < numOfPhil; i++){
+                    pthread_create(&threads[i],NULL,Philosopher::runThread,&philosophers[i]);  
+                }
             }else{
                 cout<<"The number of philosophers given was incorecct\n";
             }
@@ -49,9 +57,3 @@ int main(int argc,char ** argv){
     return 0;
 }
 
-// void cleanup() {
-//     for (auto thread : philosophers) {
-//         pthread_join(*thread, nullptr);
-//         delete thread;  // Free memory allocated for the pthread_t
-//     }
-// }

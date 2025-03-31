@@ -20,6 +20,28 @@ Po podniesieniu pałeczek filozof je przez jakiś skończony czas. Następnie od
 4. Po jakimś czasie (symulującym jedzenie) filozof musi odłożyć pałeczkę.
 5. Filozof może być w trzech stanach Rozważa(THINKING), Je(EATING) i Czeka(HUNGRY).
 
+### Wątki i sekcje krytyczne
+
+Każdy filozof w programie symulowany jest na osobnym wątku.
+
+W programie występują dwie sekcje krytyczne: \
+
+1. Wynika z treści zadania. Kiedy filozof podnosi pałeczki musi je zablokować by nie doszło do wyścigu. \
+    ![Główn sekcja krytyczna](/img/critical_sec1.png) \
+    Powyższy kod przedstawia fragment funkcji takeChop w której filozof podnosi pałeczki.
+    W tym przypadku wygodniej było użyć funkcji std::mutex.lock()
+    W pętli while filozof(wątek) próbuje podnieść prawą pałeczkę.
+    Jeżeli mu się nie uda odkłada lewą i czeka chwilę. \
+    ![Główn sekcja krytyczna](/img/unlock.png) \
+    Powyższy kod przedstawia fragment funkcji putChop która odpowiada za odkładanie pałeczek.
+    Jako że wcześcniej użyto std::mutex.lock() to w dalszej części kodu musi pojawić się std::mutex.unlock().
+
+2. Nie jest ściśle niezbędna ale użyto jej by wydruk był bardziej przejrzysty.\
+    ![Główn sekcja krytyczna](/img/critical_sec2.png) \
+    W tej sekcji kodu użyto std::lock_guard\<mutex\> jest to klasa otaczająca mutex.
+    Podczas tworzenia wywoływany jest std::mutex.lock() na podanym mutexsie.
+    Natomiast przy wywołaniu dekonstruktora (Np. po wyjściu z zakresu) używana jest funkcja std::mutex.unlock().
+
 ## Instrukcja
 
 1. Kod przygotowany na systemy Linux (korzysta z biblioteki pthreads).
@@ -39,9 +61,8 @@ Po podniesieniu pałeczek filozof je przez jakiś skończony czas. Następnie od
 
 ### Wydruk w konsoli
 
-![Przykład wydruku](img/image.png)\
+![Przykład wydruku](img/console_printout.png)\
 Powyżej zamieszczam przykład tego jak będzie wyglądał wydruk w konsoli.
-Każdy wiersz w tablicy to osobny filozof oraz wątek.
 Każdy filozof ma przypisane własne id.
 W kolumnach ID_C1 i ID_C2 znajdują się id pałeczek które trzyma filozof (Jeżeli nie trzyma żadnej to pola zostają puste).
 Kolumna STATE wskazuje aktualny stan danego filozofa.

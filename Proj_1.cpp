@@ -52,7 +52,6 @@ void think(int i){
     philosophers[i].timesThinking++;
     {
         lock_guard<mutex> lock(out);
-        cout<<philosophers[i].id<<"\n";
         draw();
     }
     usleep(( rand()%MAX_TIME+1 ) * US_TO_S );
@@ -75,7 +74,6 @@ void takeChop(int i){
     philosophers[i].boothLocked = true;
     {
         lock_guard<mutex> lock(out);
-        cout<<philosophers[i].id<<"\n";
         draw();
     }
 }
@@ -84,7 +82,6 @@ void eat(int i){
     philosophers[i].timesEating++;
     {
         lock_guard<mutex> lock(out);
-        cout<<philosophers[i].id<<"\n";
         draw();
     }
     usleep(( rand()%MAX_TIME+1 ) * US_TO_S );
@@ -98,7 +95,6 @@ void returnChop(int i){
     philosophers[i].boothLocked = false;
     {
         lock_guard<mutex> lock(out);
-        cout<<philosophers[i].id<<"\n";
         draw();
     }
 }
@@ -108,7 +104,6 @@ void* run(void* arg){
     signal(SIGTERM, signalHandler); 
     while (true){
         think(i);
-        pthread_testcancel();
         takeChop(i);
         eat(i);
         returnChop(i);
